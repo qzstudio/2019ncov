@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>速查！新型肺炎确诊患者同行查询工具来了</title>
+<link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css">
+<style>
+    .site-title {
+      margin: 30px 0 20px;
+    }
+
+    .site-title fieldset {
+      border: none;
+      padding: 0;
+      border-top: 1px solid #eee;
+      text-align:center;
+    }
+
+    .site-title fieldset legend {
+      margin-left: 20px;
+      padding: 0 10px;
+      font-size: 22px;
+      font-weight: 300;
+    }
+
+    .source-link {
+      text-decoration: underline;
+    }
+
+    .layui-input-wide {
+      width: -moz-calc(100% - 50px);
+      width: -webkit-calc(100% - 50px);
+      width: calc(100% - 50px);
+    }
+    .site-tips{
+      padding-left:20px;
+      padding-right:20px;
+    }
+  </style>
+</head>
+<body>
+<form class="layui-form">
+<div class="site-title">
+<fieldset>
+<legend><a name="brief">新型冠状病毒感染的肺炎<br />确诊患者同行程查询工具<br /><b>v1.3</b></a></legend>
+</fieldset>
+</div>
+<div class="layui-form-item">
+<label class="layui-form-label">日期：</label>
+<div class="layui-input-block">
+<input type="text" class="layui-input layui-input-wide" name="t_date" id="t_date" placeholder="例如: 2020-01-01" autocomplete="off">
+</div>
+</div>
+<div class="layui-form-item">
+<label class="layui-form-label">车次：</label>
+<div class="layui-input-block">
+<input type="text" class="layui-input layui-input-wide" name="t_no" placeholder="车次或航班，例如：T123 或 AC1111">
+</div>
+</div>
+<div class="layui-form-item">
+<label class="layui-form-label">地区：</label>
+<div class="layui-input-block">
+<input type="text" class="layui-input layui-input-wide" name="t_area" placeholder="可不填，例如：成都 或 四川">
+</div>
+</div>
+<div class="layui-form-item">
+<label class="layui-form-label"></label>
+<div class="layui-input-inline">
+<button class="layui-btn" lay-submit lay-filter="search">查询</button>
+<button type="reset" class="layui-btn layui-btn-primary" onclick="ResetSearch()">重置</button>
+</div>
+</div>
+<div class="site-title site-tips">
+&nbsp;&nbsp;&nbsp;&nbsp;* 以上检索选项可以选填任意一项或多项进行检索。 <br />
+&nbsp;&nbsp;&nbsp;&nbsp;* 以下为与你输入信息相匹配的确诊患者行程数据，请按 “特别提示” 科学应对。
+</div>
+</form>
+<div class="layui-tab layui-tab-card" lay-filter="chData">
+<ul class="layui-tab-title">
+<li class="layui-this" lay-id="0">全部</li>
+<li lay-id="1">飞机</li>
+<li lay-id="2">火车</li>
+<li lay-id="3">地铁</li>
+<li lay-id="4">长途客车/大巴</li>
+<li lay-id="5">公交车</li>
+<li lay-id="6">出租车</li>
+<li lay-id="7">轮船</li>
+<li lay-id="8">其它公共场所</li>
+</ul>
+<div class="layui-tab-content">
+<div class="layui-tab-item layui-show">
+<table id="type0"></table>
+</div>
+<div class="layui-tab-item layui-show">
+<table id="type1"></table>
+</div>
+<div class="layui-tab-item">
+<table id="type2"></table>
+</div>
+<div class="layui-tab-item">
+<table id="type3"></table>
+</div>
+<div class="layui-tab-item">
+<table id="type4"></table>
+</div>
+<div class="layui-tab-item">
+<table id="type5"></table>
+</div>
+<div class="layui-tab-item">
+<table id="type6"></table>
+</div>
+<div class="layui-tab-item">
+<table id="type7"></table>
+</div>
+<div class="layui-tab-item">
+<table id="type8"></table>
+</div>
+</div>
+</div>
+<div class="site-title site-tips">
+&nbsp;&nbsp;&nbsp;&nbsp;<b>特别提示：</b><br /><br />
+&nbsp;&nbsp;&nbsp;&nbsp;* 同乘人员、可能接触人员返家后，暂不要外出，居家封闭隔离观察。如有发热症状请就近到网上公布的指定医院发热门诊救治。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;* 就诊过程中，要全程佩戴口罩，尽量不要乘坐公共交通工具。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;* 同乘人员、可能接触人员要第一时间到所在社区进行登记，并与所在县（市）区疾病预防控制部门取得联系。
+</div>
+<div class="site-title site-tips">
+&nbsp;&nbsp;&nbsp;&nbsp;* 数据均搜集自各官方公众号/微博/网站发布的信息。感谢参与搜集数据的广大网友。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;* 本站数据接口和页面接受转发、嵌入、调用、下载。本程序将努力维护到疫情结束。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;* 错误数据反馈:admin@8dfish.com 505097558@qq.com。<br />
+&nbsp;&nbsp;&nbsp;&nbsp;* 若各地官方机构希望增补行程数据、寻人信息，可联系admin@8dfish.com。
+</div>
+<div class="site-title site-tips" style="background: #111;margin-bottom: 0;">
+  &nbsp;&nbsp;&nbsp;&nbsp;<img src="./logo.png" width="88" />&nbsp;<img src="./wt_logo.png" width="88" />
+</div>
+<script src="./distpicker.data.min.js"></script>
+<script src="https://www.layuicdn.com/layui/layui.js"></script>
+<script src="./share.js"></script>
+<script>
+    var gtype = 0; //当前标签页
+    var last_param = { 't_date': '', 't_no': '', 't_area': '' };
+    var tmpData = null;
+    var AllData = null;
+	var gTable = null;
+
+    //表格通用函数
+    function tablefun(_table, _type, _data) {
+      //_type 交通类型
+      //_data 表格数据
+      _table.render({
+        elem: '#type' + _type
+        , data: _data //数据
+        , page: true
+		, toolbar: '<div><b style="color:#009688">手机端表格向左滑动查看更多..</b></div>' 
+		, defaultToolbar: ['filter']
+        , cols: [[ //表头
+          { field: 't_type', title: '交通类型', width: 120, sort: true, fixed: 'left', templet: '#typeTpl' }
+          , { field: 't_date', title: '日期', width: 120, sort: true, templet: '#dateTpl' }
+          , { field: 't_no', title: '车次/车牌/航班号/场所名称', width: 200, sort: true }
+          , { field: 't_no_sub', title: '车厢', width: 177 }
+          , { field: 't_pos_start', title: '出发站', width: 120, sort: true }
+          , { field: 't_pos_end', title: '到达站', width: 120, sort: true }
+          , { field: 't_memo', title: '车次附加描述', width: 200 }
+          , { field: 't_start', title: '开始时间', width: 120, templet: '#timeStartTpl' }
+          , { field: 't_end', title: '结束时间', width: 120, templet: '#timeEndTpl' }
+          , { field: 'source', title: '线索来源', width: 120, templet: '#linkTpl' }
+          , { field: 'created_at', title: '提交时间', width: 135, sort: true, templet: '#timeCreateTpl' }
+		  , { field: 'remark', title: '事件备注', width: 135 }
+        ]],
+        text: {
+          none: '暂无官方新闻提及该行程或地点存在确诊病例，数据如有遗漏或错误，请反馈给我们！' 
+        }
+      });
+    }
+	
+	//重置查询
+	function ResetSearch(){
+		gtype = 0;
+		gElement.tabChange('chData', 0);
+		tablefun(gTable, gtype, AllData);
+	}
+	
+	//省市关联查询
+	function RelationSearch(_s,_v){
+		var _s = _s || '';
+		var _v = _v || '';
+		var province = ChineseDistricts[86];
+		var regstr = '';
+		for(var i in province){
+			if(province[i].indexOf(_s)>-1){
+				for(var j in ChineseDistricts[i]){
+					regstr += ChineseDistricts[i][j].replace(/(市|自治州)$/,'') + '|';
+				}
+			}
+		}
+		regstr = '(' + _s + (regstr!=''?'|':')') + regstr.replace(/\|$/,')');
+		var re = new RegExp(regstr);
+		if(re.test(_v)) console.log(_v + ':' + re.test(_v));
+		return re.test(_v);
+	}
+
+    //layui通用模块
+    layui.use(['table', "form", 'element', 'laydate', 'jquery'], function () {
+      var element = layui.element;
+	  gElement = layui.element;
+      var table = layui.table;
+	  gTable = layui.table;
+      var laydate = layui.laydate;
+      var form = layui.form;
+      var $ = layui.jquery;
+
+      //日期控件
+      laydate.render({
+        elem: '#t_date'
+      });
+
+      //标签切换
+      element.on('tab(chData)', function () {
+        gtype = this.getAttribute('lay-id');
+        tmpData = [];
+        for (i in AllData) {
+          var flag = true;
+          if (gtype > 0) {
+            flag &= AllData[i].t_type == gtype;
+          }
+          if (last_param['t_date'] != '') {
+            flag &= AllData[i].t_date == last_param['t_date'];
+          }
+          if (last_param['t_no'] != '') {
+            flag &= (AllData[i].t_no||"").toLowerCase().indexOf(last_param['t_no'].toLowerCase()) > -1;
+          }
+          if (last_param['t_area'] != '') {
+            var t_area = last_param['t_area'].toLowerCase();
+			var t_no = (AllData[i].t_no || "").toLowerCase();
+			var t_pos_start = AllData[i].t_pos_start;
+			var t_pos_end = AllData[i].t_pos_end;
+			var t_memo = AllData[i].t_memo;
+			flag &= RelationSearch(t_area,t_no) || RelationSearch(t_area,t_pos_start) || RelationSearch(t_area,t_pos_end) || RelationSearch(t_area,t_memo);
+          }
+          if (flag) tmpData.push(AllData[i]);
+        }
+        tablefun(table, gtype, tmpData);
+      });
+
+      //搜索功能
+      form.on("submit(search)", function (data) {
+        last_param = data.field;
+        tmpData = [];
+        for (i in AllData) {
+          var flag = true;
+		  if (gtype > 0) {
+            flag &= AllData[i].t_type == gtype;
+          }
+          if (last_param['t_date'] != '') {
+            flag &= AllData[i].t_date == last_param['t_date'];
+          }
+          if (last_param['t_no'] != '') {
+            flag &= (AllData[i].t_no||"").toLowerCase().indexOf(last_param['t_no'].toLowerCase()) > -1;
+          }
+          if (last_param['t_area'] != '') {
+            var t_area = last_param['t_area'].toLowerCase();
+			var t_no = (AllData[i].t_no || "").toLowerCase();
+			var t_pos_start = AllData[i].t_pos_start;
+			var t_pos_end = AllData[i].t_pos_end;
+			var t_memo = AllData[i].t_memo;
+			flag &= RelationSearch(t_area,t_no) || RelationSearch(t_area,t_pos_start) || RelationSearch(t_area,t_pos_end) || RelationSearch(t_area,t_memo);
+          }
+          if (flag) tmpData.push(AllData[i]);
+        }
+		tablefun(table, gtype, tmpData);
+        return false;
+      });
+      var url = "./data.json?"+Math.floor(new Date().getTime()/1000/3600);
+      $.getJSON(url, function (result) {
+        AllData = result.data;
+        //页面初次载入，表格初始化
+        tablefun(table, gtype, AllData);
+      });
+    });
+  </script>
+<script type="text/html" id="typeTpl">
+  {{#  if(d.t_type == 1){ }}
+        飞机
+    {{#  } else if(d.t_type == 2) { }}
+        火车
+    {{#  } else if(d.t_type == 3) { }}
+        地铁
+    {{#  } else if(d.t_type == 4) { }}
+        长途客车/大巴
+    {{#  } else if(d.t_type == 5) { }}
+        公交车
+    {{#  } else if(d.t_type == 6) { }}
+        出租车
+    {{#  } else if(d.t_type == 7) { }}
+        轮船
+    {{#  } else if(d.t_type == 8) { }}
+        其它公共场所
+    {{#  } }}
+</script>
+<script type="text/html" id="dateTpl">
+  {{ d.t_date.replace('2020-','') }}
+</script>
+<script type="text/html" id="timeStartTpl">
+  {{ new Date(d.t_start).toLocaleString() }}
+</script>
+<script type="text/html" id="timeEndTpl">
+  {{ new Date(d.t_end).toLocaleString() }}
+</script>
+<script type="text/html" id="timeCreateTpl">
+  {{ new Date(d.created_at).toLocaleString() }}
+</script>
+<script type="text/html" id="linkTpl">
+  <a class="source-link" target="_blank" href="{{d.source}}">{{d.who}}</a>
+</script>
+</body>
+</html>
